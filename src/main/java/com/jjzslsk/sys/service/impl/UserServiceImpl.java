@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -66,9 +67,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             Map<String, Object> data = new HashMap<>();
             data.put("name",loginUser.getUsername());
             data.put("avatar",loginUser.getAvatar());
-            System.out.println(data);
+            //角色
+            List<String> roleList = this.baseMapper.getRoleNameByUserId(loginUser.getId());
+            System.out.println(roleList);
+            data.put("role", roleList);
             return data;
         }
         return null;
+    }
+
+    @Override
+    public void logout(String token) {
+        redisTemplate.delete(token);
     }
 }
